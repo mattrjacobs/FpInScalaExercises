@@ -29,7 +29,7 @@ class Exercise2 extends Specification {
       "yes" ! positiveYes ^
       "no" ! positiveNo ^
       p ^
-      "absolute" ^
+      "absoluteMonomorphic" ^
       "cube" ^
       "positive" ! cubePositive ^
       "negative" ! cubeNegative

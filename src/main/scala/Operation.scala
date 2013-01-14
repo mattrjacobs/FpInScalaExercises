@@ -18,4 +18,8 @@ object Operation {
   }
   def absoluteMonomorphic(p: Int => Int): Int => Int =
     n => abs(p(n))
+  def absolute[A](p: A => Int): A => Int =
+    n => abs(p(n))
+  def divisibleBy(k: Int): Pred[Int] =
+    n => k % n == 0
 }
