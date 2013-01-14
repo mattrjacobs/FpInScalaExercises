@@ -14,8 +14,11 @@ class Exercise4 extends Specification {
       "yes" ! divisibleFortyYes ^
       "no" ! divisibleFortyNo
 
-  def divisibleTenYes = Operation.divisibleBy(10)(5) must beTrue
-  def divisibleTenNo = Operation.divisibleBy(10)(4) must beFalse
-  def divisibleFortyYes = Operation.divisibleBy(40)(8) must beTrue
-  def divisibleFortyNo = Operation.divisibleBy(40)(9) must beFalse
+  val divBy10 = Operation.divisibleBy(10)
+  val divBy40 = Operation.divisibleBy(40)
+
+  def divisibleTenYes = divBy10(90) must beTrue
+  def divisibleTenNo = divBy10(88) must beFalse
+  def divisibleFortyYes = divBy40(120) must beTrue
+  def divisibleFortyNo = divBy40(10) must beFalse
 }
