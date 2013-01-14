@@ -23,4 +23,17 @@ object Operation {
     n => abs(p(n))
   def divisibleBy(k: Int): Pred[Int] =
     n => k % n == 0
+  val divisibleBy3And5Simple: Pred[Int] =
+    n => divisibleBy(n)(3) && divisibleBy(n)(5)
+  val divisibleBy3Or5Simple: Pred[Int] =
+    n => divisibleBy(n)(3) || divisibleBy(n)(5)
+  val divisibleBy3And5: Pred[Int] =
+    divisibleWith3And5(_ && _)
+  val divisibleBy3Or5: Pred[Int] =
+    divisibleWith3And5(_ || _)
+  def divisibleWith3And5(f: (Boolean, Boolean) => Boolean) =
+    lift[Int](f, (n: Int) => divisibleBy(n)(3), (n: Int) => divisibleBy(n)(5))
+
+  def lift[A](f: (Boolean, Boolean) => Boolean, g: Pred[A], h: Pred[A]): Pred[A] =
+    n => f(g(n), h(n))
 }
