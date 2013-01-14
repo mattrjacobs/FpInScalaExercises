@@ -5,9 +5,9 @@ import org.specs2._
 class Exercise2 extends Specification {
   def is =
     "Exercise2" ^
-      "even" ^
-      "yes" ! evenYes ^
-      "no" ! evenNo ^
+      "evenDirect" ^
+      "yes" ! evenDirectYes ^
+      "no" ! evenDirectNo ^
       p ^
       "negative" ^
       "yes" ! negativeYes ^
@@ -34,8 +34,8 @@ class Exercise2 extends Specification {
       "positive" ! cubePositive ^
       "negative" ! cubeNegative
 
-  def evenYes = Operation.even(2) must beTrue
-  def evenNo = Operation.even(1) must beFalse
+  def evenDirectYes = Operation.evenDirect(2) must beTrue
+  def evenDirectNo = Operation.evenDirect(1) must beFalse
   def negativeYes = Operation.negative(-9) must beTrue
   def negativeNo = Operation.negative(6) must beFalse
   def odd_1Yes = Operation.odd_1(5) must beTrue

@@ -3,7 +3,8 @@ package com.mattrjacobs.fp
 object Operation {
   type Pred[A] = A => Boolean
 
-  def even(n: Int): Boolean = n % 2 == 0
+  def evenDirect(n: Int): Boolean = n % 2 == 0
+  def even(n: Int): Boolean = divisibleBy(n)(2)
   def negative(n: Int): Boolean = n < 0
   def odd_1(n: Int): Boolean = !(even(n))
   def positive_1(n: Int): Boolean = !(negative(n))
