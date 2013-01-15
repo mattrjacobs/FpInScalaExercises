@@ -30,4 +30,11 @@ object Operation {
 
   def lift[A](f: (Boolean, Boolean) => Boolean, g: Pred[A], h: Pred[A]): Pred[A] =
     n => f(g(n), h(n))
+
+  def curry[A, B, C](f: (A, B) => C): A => B => C =
+    a => b => f(a, b)
+
+  def uncurry[A, B, C](f: A => B => C): (A, B) => C = {
+    case (a, b) => f(a)(b)
+  }
 }
