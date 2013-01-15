@@ -37,6 +37,9 @@ object Operation {
   def lift3[A, B, C, D, E](f: (B, C, D) => E)(g: A => B, h: A => C, i: A => D): A => E =
     n => f(g(n), h(n), i(n))
 
+  def lift3ReuseLift[A, B, C, D, E](f: (B, C, D) => E)(g: A => B, h: A => C, i: A => D): A => E =
+    a => lift[A, C, D, E](f(g(a), _, _))(h, i)(a)
+
   def curry[A, B, C](f: (A, B) => C): A => B => C =
     a => b => f(a, b)
 
