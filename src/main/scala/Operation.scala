@@ -1,8 +1,6 @@
 package com.mattrjacobs.fp
 
 object Operation {
-  type Pred[A] = A => Boolean
-
   def evenDirect(n: Int): Boolean = n % 2 == 0
   def even(n: Int): Boolean = divisibleBy(2)(n)
   def negative(n: Int): Boolean = n < 0
