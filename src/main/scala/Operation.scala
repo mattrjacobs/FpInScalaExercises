@@ -26,10 +26,16 @@ object Operation {
   val divisibleBy3Or5: Pred[Int] =
     divisibleWith3And5(_ || _)
   def divisibleWith3And5(f: (Boolean, Boolean) => Boolean) =
-    lift[Int](f, divisibleBy(3), divisibleBy(5))
+    liftBool[Int](f, divisibleBy(3), divisibleBy(5))
 
-  def lift[A](f: (Boolean, Boolean) => Boolean, g: Pred[A], h: Pred[A]): Pred[A] =
+  def liftBool[A](f: (Boolean, Boolean) => Boolean, g: Pred[A], h: Pred[A]): Pred[A] =
     n => f(g(n), h(n))
+
+  def lift[A, B, C, D](f: (B, C) => D)(g: A => B, h: A => C): A => D =
+    n => f(g(n), h(n))
+
+  def lift3[A, B, C, D, E](f: (B, C, D) => E)(g: A => B, h: A => C, i: A => D): A => E =
+    n => f(g(n), h(n), i(n))
 
   def curry[A, B, C](f: (A, B) => C): A => B => C =
     a => b => f(a, b)
