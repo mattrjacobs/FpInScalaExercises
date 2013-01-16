@@ -50,7 +50,10 @@ object List { // `List` companion object
   def product2(l: List[Double]) =
     foldRight(l, 1.0)(_ * _)
 
-  def tail[A](l: List[A]): List[A] = sys.error("todo")
+  def tail[A](l: List[A]): List[A] = l match {
+    case Nil         => Nil
+    case Cons(x, xs) => xs
+  }
 
   def drop[A](l: List[A], n: Int): List[A] = sys.error("todo")
 
