@@ -1,0 +1,5 @@
+foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_,_))
+Cons(1, foldRight(List(2, 3), Nil: List[Int])(Cons(_, _)))
+Cons(1, Cons(2, foldRight(List(3), Nil: List[Int])(Cons(_, _))))
+Cons(1, Cons(2, Cons(3, foldRight(Nil, Nil: List[Int])(Cons(_, _)))))
+Cons(1, Cons(2, Cons(3, Nil)))
