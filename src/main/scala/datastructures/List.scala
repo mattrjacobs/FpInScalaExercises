@@ -55,7 +55,12 @@ object List { // `List` companion object
     case Cons(x, xs) => xs
   }
 
-  def drop[A](l: List[A], n: Int): List[A] = sys.error("todo")
+  @scala.annotation.tailrec
+  def drop[A](l: List[A], n: Int): List[A] = (l, n) match {
+    case (Nil, _)         => Nil
+    case (done, 0)        => done
+    case (Cons(x, xs), _) => drop(xs, n - 1)
+  }
 
   def dropWhile[A](l: List[A])(f: A => Boolean): List[A] = sys.error("todo")
 
