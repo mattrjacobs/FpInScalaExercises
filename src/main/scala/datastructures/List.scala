@@ -94,5 +94,8 @@ object List { // `List` companion object
 
   def product3(l: List[Int]) = foldLeft(l, 1)((accum, elem) => accum * elem)
 
+  def reverse[A](l: List[A]): List[A] = foldLeft(l, Nil: List[A])((accum, elem) =>
+    Cons(elem, accum))
+
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 }
