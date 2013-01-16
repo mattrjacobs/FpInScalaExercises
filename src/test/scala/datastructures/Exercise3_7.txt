@@ -1,0 +1,5 @@
+foldRight(Cons(1, Cons(2, Cons(3, Nil))), 0)(_ + _)
+1 + foldRight(Cons(2, Cons(3, Nil)), 0)(_ + _)
+1 + 2 + foldRight(Cons(3, Nil), 0)(_ + _)
+1 + 2 + 3 + foldRight(Nil, 0)(_ + _)
+1 + 2 + 3 + 0 = 6
