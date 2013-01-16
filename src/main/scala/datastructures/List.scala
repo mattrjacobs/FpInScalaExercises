@@ -68,7 +68,10 @@ object List { // `List` companion object
     case l                   => l
   }
 
-  def setHead[A](l: List[A])(h: A): List[A] = sys.error("todo")
+  def setHead[A](l: List[A])(h: A): List[A] = l match {
+    case Nil         => Nil
+    case Cons(x, xs) => Cons(h, xs)
+  }
 
   def init[A](l: List[A]): List[A] = sys.error("todo")
 
