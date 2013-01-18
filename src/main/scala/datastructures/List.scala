@@ -105,5 +105,8 @@ object List { // `List` companion object
   def append2[A](l1: List[A], l2: List[A]): List[A] =
     foldRight(l1, l2)(Cons(_, _))
 
+  def multiAppend[A](ls: List[List[A]]): List[A] =
+    foldRight(ls, Nil: List[A])((l, accum) => List.append2(l, accum))
+
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 }
