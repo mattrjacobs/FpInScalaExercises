@@ -125,4 +125,10 @@ object List { // `List` companion object
       case true  => Cons(elem, newList)
       case false => newList
     })
+
+  def filterInFlatMap[A](l: List[A])(f: A => Boolean): List[A] =
+    flatMap(l)(elem => f(elem) match {
+      case true  => Cons(elem, Nil)
+      case false => Nil
+    })
 }
