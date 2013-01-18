@@ -131,4 +131,10 @@ object List { // `List` companion object
       case true  => Cons(elem, Nil)
       case false => Nil
     })
+
+  def zip[A, B, C](l1: List[A], l2: List[B])(f: (A, B) => C): List[C] =
+    (l1, l2) match {
+      case (Cons(h1, rest1), Cons(h2, rest2)) => Cons(f(h1, h2), zip(rest1, rest2)(f))
+      case _                                  => Nil
+    }
 }
