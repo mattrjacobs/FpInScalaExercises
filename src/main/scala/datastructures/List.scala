@@ -114,5 +114,15 @@ object List { // `List` companion object
   def doubleToString(l: List[Double]) =
     foldRight(l, Nil: List[String])((elem, newList) => Cons(elem.toString, newList))
 
-  def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
+  def map[A, B](l: List[A])(f: A => B): List[B] =
+    foldRight(l, Nil: List[B])((elem, newList) => Cons(f(elem), newList))
+
+  def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] =
+    foldRight(l, Nil: List[B])((elem, newList) => append(f(elem), newList))
+
+  def filter[A](l: List[A])(f: A => Boolean): List[A] =
+    foldRight(l, Nil: List[A])((elem, newList) => f(elem) match {
+      case true  => Cons(elem, newList)
+      case false => newList
+    })
 }
