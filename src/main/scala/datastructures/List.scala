@@ -88,6 +88,11 @@ object List { // `List` companion object
       case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
     }
 
+  def foldRightInFoldLeft[A, B](l: List[A], z: B)(f: (A, B) => B): B = l match {
+    case Nil         => z
+    case Cons(x, xs) => foldLeft(reverse(xs), z)((b, a) => f(a, b))
+  }
+
   def length3[A](l: List[A]) = foldLeft(l, 0)((accum, _) => accum + 1)
 
   def sum3(l: List[Int]) = foldLeft(l, 0)((accum, elem) => accum + elem)
@@ -96,6 +101,9 @@ object List { // `List` companion object
 
   def reverse[A](l: List[A]): List[A] = foldLeft(l, Nil: List[A])((accum, elem) =>
     Cons(elem, accum))
+
+  def append2[A](l1: List[A], l2: List[A]): List[A] =
+    foldRight(l1, l2)(Cons(_, _))
 
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 }
