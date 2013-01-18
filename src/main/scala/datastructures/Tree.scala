@@ -7,6 +7,11 @@ case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 object Tree {
   def size[A](t: Tree[A]): Int = t match {
     case Leaf(_)                     => 1
-    case Branch(leftTree, rightTree) => Tree.size(leftTree) + Tree.size(rightTree)
+    case Branch(leftTree, rightTree) => 1 + size(leftTree) + size(rightTree)
+  }
+
+  def maximum(t: Tree[Int]): Int = t match {
+    case Leaf(value)                 => value
+    case Branch(leftTree, rightTree) => maximum(leftTree) max maximum(rightTree)
   }
 }
