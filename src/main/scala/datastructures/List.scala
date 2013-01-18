@@ -111,5 +111,8 @@ object List { // `List` companion object
   def addOne(l: List[Int]) =
     foldRight(l, Nil: List[Int])((elem, newList) => Cons(elem + 1, newList))
 
+  def doubleToString(l: List[Double]) =
+    foldRight(l, Nil: List[String])((elem, newList) => Cons(elem.toString, newList))
+
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 }
