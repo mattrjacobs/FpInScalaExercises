@@ -1,4 +1,4 @@
-package com.mattrjacobs.fp
+package com.mattrjacobs.fp.collection
 
 import org.specs2._
 

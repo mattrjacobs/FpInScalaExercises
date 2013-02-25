@@ -1,4 +1,4 @@
-package com.mattrjacobs.fp
+package com.mattrjacobs.fp.collection
 
 sealed trait List[+A] // `List` data type
 case object Nil extends List[Nothing] // data constructor for `List`

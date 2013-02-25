@@ -101,4 +101,10 @@ object Option {
   def bothMatch_2(pat1: String, pat2: String, s: String): Option[Boolean] =
     map2(mkMatcher(pat1), mkMatcher(pat2))((o1: String => Boolean, o2: String => Boolean) =>
       o1(s) && o2(s))
+
+  def sequence[A](options: List[Option[A]]): Option[List[A]] =
+    options match {
+      case Nil     => Some(Nil)
+      case x :: xs => x flatMap (h => sequence(xs))
+    }
 }

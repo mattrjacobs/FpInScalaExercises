@@ -1,4 +1,4 @@
-package com.mattrjacobs.fp
+package com.mattrjacobs.fp.collection
 
 sealed trait Tree[+A]
 case class Leaf[A](value: A) extends Tree[A]
