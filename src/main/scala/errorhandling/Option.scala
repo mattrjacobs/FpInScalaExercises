@@ -41,5 +41,15 @@ case class Some[+A](v: A) extends Option[A]
 case object None extends Option[Nothing]
 
 object Option {
+  def mean(xs: Seq[Double]): Option[Double] = xs.size match {
+    case 0 => None
+    case _ => Some(xs.sum / xs.size)
+  }
 
+  def variance(xs: Seq[Double]): Option[Double] = {
+    def varianceGivenMean(m: Double, xs: Seq[Double]): Option[Double] =
+      mean(xs.map(x => math.pow(x - m, 2)))
+
+    mean(xs).flatMap(varianceGivenMean(_, xs))
+  }
 }
