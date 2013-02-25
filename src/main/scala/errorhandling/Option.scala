@@ -107,4 +107,13 @@ object Option {
       case Nil     => Some(Nil)
       case x :: xs => x flatMap (h => sequence(xs).map(s => h :: s))
     }
+
+  def traverse[A, B](l: List[A])(f: A => Option[B]): Option[List[B]] =
+    l match {
+      case Nil     => Some(Nil)
+      case x :: xs => f(x) flatMap (h => traverse(xs)(f).map(s => h :: s))
+    }
+
+  def sequence_in_terms_of_traverse[A](options: List[Option[A]]): Option[List[A]] =
+    traverse(options)(o => o)
 }
