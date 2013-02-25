@@ -97,4 +97,8 @@ object Option {
       v1 <- a
       v2 <- b
     } yield f(v1, v2)
+
+  def bothMatch_2(pat1: String, pat2: String, s: String): Option[Boolean] =
+    map2(mkMatcher(pat1), mkMatcher(pat2))((o1: String => Boolean, o2: String => Boolean) =>
+      o1(s) && o2(s))
 }
