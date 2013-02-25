@@ -1,0 +1,5 @@
+* No accumulation occurs on the left hand-side of either in the given operations.  To report both errors, you need to accumulate somewhere, instead of immediately failing fast.
+
+* Since String has a natural String + String = String method, we could leave the type of mkPerson along (or could change it to Either[(String, String), Person], or Either[List[String], Person]
+
+* We would need to change the implementation of map2 to allow for accumulation on the left hand side of Either.  We would also need that type to haev a nicely-defined +, Int, List, String all qualify
