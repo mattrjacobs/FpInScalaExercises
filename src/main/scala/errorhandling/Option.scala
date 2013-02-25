@@ -105,6 +105,6 @@ object Option {
   def sequence[A](options: List[Option[A]]): Option[List[A]] =
     options match {
       case Nil     => Some(Nil)
-      case x :: xs => x flatMap (h => sequence(xs))
+      case x :: xs => x flatMap (h => sequence(xs).map(s => h :: s))
     }
 }
