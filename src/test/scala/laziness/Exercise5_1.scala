@@ -1,4 +1,4 @@
-package com.mattrjacobs.fp
+package com.mattrjacobs.fp.laziness
 
 import org.specs2._
 

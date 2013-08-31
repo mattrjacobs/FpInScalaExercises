@@ -1,23 +1,34 @@
-package com.mattrjacobs.fp
+package com.mattrjacobs.fp.laziness
 
 trait Stream[+A] {
-  def uncons: scala.Option[(A, Stream[A])]
+  def uncons: Option[(A, Stream[A])]
   def isEmpty: Boolean = uncons.isEmpty
 
   def toList: List[A] = uncons match {
-    case scala.Some((element, rest)) => element :: rest.toList
-    case scala.None                  => Nil
+    case Some((element, rest)) => element :: rest.toList
+    case None                  => Nil
+  }
+
+  def take(n: Int): Stream[A] = if (n == 0) {
+    Stream.empty
+  } else {
+    uncons match {
+      case Some((element, rest)) => new Stream[A] {
+        lazy val uncons = Some((element, rest.take(n - 1)))
+      }
+      case None => Stream.empty
+    }
   }
 }
 
 object Stream {
-  def empty[A]: Stream[A] =
-    new Stream[A] { def uncons = scala.None }
+  def empty[A]: Stream[A] = new Stream[A] {
+    def uncons = scala.None
+  }
 
-  def cons[A](hd: => A, tl: => Stream[A]): Stream[A] =
-    new Stream[A] {
-      lazy val uncons = scala.Some((hd, tl))
-    }
+  def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = new Stream[A] {
+    lazy val uncons = Some((hd, tl))
+  }
 
   def apply[A](as: A*): Stream[A] =
     if (as.isEmpty) empty
