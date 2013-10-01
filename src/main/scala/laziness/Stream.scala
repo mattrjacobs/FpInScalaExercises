@@ -19,6 +19,14 @@ trait Stream[+A] {
       case None => Stream.empty
     }
   }
+
+  def takeWhile(p: A => Boolean): Stream[A] = uncons match {
+    case Some((element, rest)) if p(element) => new Stream[A] {
+      lazy val uncons = Some((element, rest.takeWhile(p)))
+    }
+    case Some((element, rest)) if !p(element) => rest.takeWhile(p)
+    case None                                 => Stream.empty
+  }
 }
 
 object Stream {
