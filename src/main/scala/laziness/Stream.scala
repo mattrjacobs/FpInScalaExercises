@@ -27,6 +27,12 @@ trait Stream[+A] {
     case Some((element, rest)) if !p(element) => rest.takeWhile(p)
     case None                                 => Stream.empty
   }
+
+  def forAll(p: A => Boolean): Boolean = uncons match {
+    case Some((element, rest)) if !p(element) => false
+    case Some((element, rest)) if p(element)  => rest.forAll(p)
+    case None                                 => true
+  }
 }
 
 object Stream {
