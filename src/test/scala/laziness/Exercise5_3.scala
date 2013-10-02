@@ -7,16 +7,29 @@ class Exercise5_3 extends Specification {
 
   val stream = cons(1, cons(2, cons(3, cons(4, Stream.empty))))
 
+  lazy val grenade: Int = {
+    throw new RuntimeException("grenade")
+    3
+  }
+
+  val explodingStream = cons(1, cons(2, cons(grenade, cons(4, Stream.empty))))
+
   def is =
-    "Exercise 5-3" ^
+    "Exercise 5-3 (takeWhile using pattern matching)" ^
       "Stream.takeWhile" ^
       "true" ! takeAll ^
-      "even" ! takeEven ^
-      "odd" ! takeOdd
+      "up to 2" ! takeUpTo2 ^
+      "up to 3" ! takeUpTo3 ^
+      "doesn't get to exploding" ! takeNotExploding ^
+      "does get to exploding" ! takeExploding
 
-  def takeAll = stream.takeWhile(_ => true).take(4).toList must_== List(1, 2, 3, 4)
+  def takeAll = stream.takeWhileViaPatternMatch(_ => true).take(4).toList must_== List(1, 2, 3, 4)
 
-  def takeEven = stream.takeWhile(n => n % 2 == 0).take(2).toList must_== List(2, 4)
+  def takeUpTo2 = stream.takeWhileViaPatternMatch(n => n < 3).toList must_== List(1, 2)
 
-  def takeOdd = stream.takeWhile(n => n % 2 == 1).take(2).toList must_== List(1, 3)
+  def takeUpTo3 = stream.takeWhileViaPatternMatch(n => n < 4).toList must_== List(1, 2, 3)
+
+  def takeNotExploding = explodingStream.takeWhileViaPatternMatch(n => n < 2).toList must_== List(1)
+
+  def takeExploding = explodingStream.takeWhileViaPatternMatch(n => n < 4).toList must throwA[RuntimeException]
 }
