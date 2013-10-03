@@ -4,6 +4,7 @@ trait Stream[+A] {
   import Stream._
 
   def uncons: Option[(A, Stream[A])]
+
   def isEmpty: Boolean = uncons.isEmpty
 
   def toList: List[A] = uncons match {
@@ -37,8 +38,8 @@ trait Stream[+A] {
   }
 
   def takeWhileViaFoldRight(p: A => Boolean): Stream[A] =
-    foldRight(empty[A])((a, b) => p(a) match {
-      case true  => cons(a, b)
+    foldRight(empty[A])((h, t) => p(h) match {
+      case true  => cons(h, t)
       case false => empty
     })
 
@@ -46,13 +47,28 @@ trait Stream[+A] {
     takeWhileViaFoldRight(p)
 
   def exists(p: A => Boolean): Boolean =
-    foldRight(false)((a, b) => p(a) || b)
+    foldRight(false)((h, t) => p(h) || t)
 
   def forAll(p: A => Boolean): Boolean = uncons match {
     case Some((element, rest)) if !p(element) => false
     case Some((element, rest)) if p(element)  => rest.forAll(p)
     case None                                 => true
   }
+
+  def map[B](f: A => B): Stream[B] =
+    foldRight(empty[B])((h, t) => cons(f(h), t))
+
+  def filter(p: A => Boolean): Stream[A] =
+    foldRight(empty[A])((h, t) => p(h) match {
+      case true  => cons(h, t)
+      case false => t
+    })
+
+  def append[B >: A](s: Stream[B]): Stream[B] =
+    foldRight(s)((h, t) => cons(h, t))
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] =
+    foldRight(empty[B])((h, t) => f(h).append(t))
 }
 
 object Stream {
