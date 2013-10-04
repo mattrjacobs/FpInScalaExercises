@@ -69,6 +69,9 @@ trait Stream[+A] {
 
   def flatMap[B](f: A => Stream[B]): Stream[B] =
     foldRight(empty[B])((h, t) => f(h).append(t))
+
+  def find(p: A => Boolean): Option[A] =
+    filter(p).uncons.map(_._1)
 }
 
 object Stream {
@@ -83,4 +86,8 @@ object Stream {
   def apply[A](as: A*): Stream[A] =
     if (as.isEmpty) empty
     else cons(as.head, apply(as.tail: _*))
+
+  def constant[A](a: A): Stream[A] = cons(a, constant(a))
+
+  val ones: Stream[Int] = constant(1)
 }
