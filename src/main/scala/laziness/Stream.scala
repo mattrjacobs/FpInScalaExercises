@@ -91,5 +91,10 @@ object Stream {
 
   def from(i: Int): Stream[Int] = cons(i, from(i + 1))
 
+  def fibs(): Stream[Int] = fibHelper(0, 1)
+
+  def fibHelper(a: Int, b: Int): Stream[Int] =
+    cons(a, cons(b, fibHelper(a + b, a + (2 * b))))
+
   val ones: Stream[Int] = constant(1)
 }
