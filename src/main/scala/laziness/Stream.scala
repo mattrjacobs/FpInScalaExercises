@@ -89,5 +89,7 @@ object Stream {
 
   def constant[A](a: A): Stream[A] = cons(a, constant(a))
 
+  def from(i: Int): Stream[Int] = cons(i, from(i + 1))
+
   val ones: Stream[Int] = constant(1)
 }
