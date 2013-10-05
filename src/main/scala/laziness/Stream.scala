@@ -96,5 +96,11 @@ object Stream {
   def fibHelper(a: Int, b: Int): Stream[Int] =
     cons(a, cons(b, fibHelper(a + b, a + (2 * b))))
 
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] =
+    f(z) match {
+      case Some((h, t)) => cons(h, unfold(t)(f))
+      case None         => empty
+    }
+
   val ones: Stream[Int] = constant(1)
 }

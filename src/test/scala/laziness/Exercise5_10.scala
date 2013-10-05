@@ -6,7 +6,7 @@ class Exercise5_10 extends Specification {
   import Stream._
 
   def is =
-    "Exercise 5-9 (Stream.fibs)" ^
+    "Exercise 5-10 (Stream.fibs)" ^
       "take some" ^
       "take 0" ! take0 ^
       "take 10" ! take10
