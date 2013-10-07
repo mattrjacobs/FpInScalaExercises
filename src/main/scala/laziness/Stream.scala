@@ -87,11 +87,26 @@ object Stream {
     if (as.isEmpty) empty
     else cons(as.head, apply(as.tail: _*))
 
-  def constant[A](a: A): Stream[A] = cons(a, constant(a))
+  def constant[A](a: A): Stream[A] = constantViaUnfold(a)
+  def constantCons[A](a: A): Stream[A] = cons(a, constant(a))
+  def constantViaUnfold[A](a: A): Stream[A] =
+    unfold(a)(_ => Some(a, a))
 
-  def from(i: Int): Stream[Int] = cons(i, from(i + 1))
+  val ones: Stream[Int] = onesViaUnfold
+  val onesCons: Stream[Int] = constantCons(1)
+  val onesViaUnfold: Stream[Int] = constantViaUnfold(1)
 
-  def fibs(): Stream[Int] = fibHelper(0, 1)
+  def from(i: Int): Stream[Int] = fromViaUnfold(i)
+  def fromCons(i: Int): Stream[Int] = cons(i, from(i + 1))
+  def fromViaUnfold(i: Int): Stream[Int] =
+    unfold(i)(n => Some(n, n + 1))
+
+  def fibs(): Stream[Int] = fibsViaUnfold()
+  def fibsCons(): Stream[Int] = fibHelper(0, 1)
+  def fibsViaUnfold(): Stream[Int] =
+    unfold((0, 1)) {
+      case (a, b) => Some((a, (b, a + b)))
+    }
 
   def fibHelper(a: Int, b: Int): Stream[Int] =
     cons(a, cons(b, fibHelper(a + b, a + (2 * b))))
@@ -102,5 +117,4 @@ object Stream {
       case None         => empty
     }
 
-  val ones: Stream[Int] = constant(1)
 }
