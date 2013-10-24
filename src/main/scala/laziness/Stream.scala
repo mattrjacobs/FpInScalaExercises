@@ -12,7 +12,9 @@ trait Stream[+A] {
     case None                  => Nil
   }
 
-  def take(n: Int): Stream[A] = if (n == 0) {
+  def take(n: Int): Stream[A] = takeViaUnfold(n)
+
+  def takeViaUncons(n: Int): Stream[A] = if (n == 0) {
     empty
   } else {
     uncons match {
@@ -21,6 +23,13 @@ trait Stream[+A] {
       }
       case None => empty
     }
+  }
+
+  def takeViaUnfold(n: Int): Stream[A] = Stream.unfold((this, n)) {
+    case (s, remaining) if remaining > 0 => s.uncons.map {
+      case ((element, rest)) => (element, (rest, remaining - 1))
+    }
+    case _ => None
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B): B =
@@ -55,7 +64,9 @@ trait Stream[+A] {
     case None                                 => true
   }
 
-  def map[B](f: A => B): Stream[B] =
+  def map[B](f: A => B): Stream[B] = mapViaFold(f)
+
+  def mapViaFold[B](f: A => B): Stream[B] =
     foldRight(empty[B])((h, t) => cons(f(h), t))
 
   def filter(p: A => Boolean): Stream[A] =
@@ -116,5 +127,4 @@ object Stream {
       case Some((h, t)) => cons(h, unfold(t)(f))
       case None         => empty
     }
-
 }
