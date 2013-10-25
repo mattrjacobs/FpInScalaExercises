@@ -27,7 +27,7 @@ trait Stream[+A] {
 
   def takeViaUnfold(n: Int): Stream[A] = Stream.unfold((this, n)) {
     case (s, remaining) if remaining > 0 => s.uncons.map {
-      case ((element, rest)) => (element, (rest, remaining - 1))
+      case ((head, tail)) => (head, (tail, remaining - 1))
     }
     case _ => None
   }
@@ -64,10 +64,15 @@ trait Stream[+A] {
     case None                                 => true
   }
 
-  def map[B](f: A => B): Stream[B] = mapViaFold(f)
+  def map[B](f: A => B): Stream[B] = mapViaUnfold(f)
 
   def mapViaFold[B](f: A => B): Stream[B] =
     foldRight(empty[B])((h, t) => cons(f(h), t))
+
+  def mapViaUnfold[B](f: A => B): Stream[B] =
+    Stream.unfold(this)((s: Stream[A]) => s.uncons.map {
+      case ((head, tail)) => (f(head), tail)
+    })
 
   def filter(p: A => Boolean): Stream[A] =
     foldRight(empty[A])((h, t) => p(h) match {
