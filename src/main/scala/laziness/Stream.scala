@@ -102,6 +102,20 @@ trait Stream[+A] {
       case _ => None
     }
   }
+
+  def zipAll[B](b: Stream[B]): Stream[(Option[A], Option[B])] =
+    Stream.unfold((Some(this): Option[Stream[A]], Some(b): Option[Stream[B]])) {
+      case (a, b) => (a.flatMap(_.uncons), b.flatMap(_.uncons)) match {
+        case (Some((headA, tailA)), (Some((headB, tailB)))) =>
+          Some(((Some(headA), Some(headB)), (Some(tailA), Some(tailB))))
+        case (Some((headA, tailA)), None) =>
+          Some(((Some(headA), None), (Some(tailA), None)))
+        case (None, Some((headB, tailB))) =>
+          Some((None, Some(headB)), (None, Some(tailB)))
+        case (None, None) =>
+          None
+      }
+    }
 }
 
 object Stream {
