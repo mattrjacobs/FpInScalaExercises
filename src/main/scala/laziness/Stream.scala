@@ -52,8 +52,14 @@ trait Stream[+A] {
       case false => empty
     })
 
+  def takeWhileViaUnfold(p: A => Boolean): Stream[A] =
+    Stream.unfold(this)((s: Stream[A]) => s.uncons.flatMap {
+      case ((head, tail)) if (p(head)) => Some((head, tail))
+      case _                           => None
+    })
+
   def takeWhile(p: A => Boolean): Stream[A] =
-    takeWhileViaFoldRight(p)
+    takeWhileViaUnfold(p)
 
   def exists(p: A => Boolean): Boolean =
     foldRight(false)((h, t) => p(h) || t)
