@@ -94,6 +94,14 @@ trait Stream[+A] {
 
   def find(p: A => Boolean): Option[A] =
     filter(p).uncons.map(_._1)
+
+  def zip[B](b: Stream[B]): Stream[(A, B)] = Stream.unfold((this, b)) {
+    case (a, b) => (a.uncons, b.uncons) match {
+      case (Some((headA, tailA)), (Some((headB, tailB)))) =>
+        Some(((headA, headB), (tailA, tailB)))
+      case _ => None
+    }
+  }
 }
 
 object Stream {
