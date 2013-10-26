@@ -160,4 +160,13 @@ object Stream {
       case Some((h, t)) => cons(h, unfold(t)(f))
       case None         => empty
     }
+
+  def startsWith[A](s: Stream[A], s2: Stream[A]): Boolean =
+    s.zipAll(s2).forAll {
+      case (Some(a), Some(b)) if a == b => true
+      case (Some(a), Some(b))           => false
+      case (Some(_), None)              => true
+      case (None, Some(_))              => false
+      case (None, None)                 => true
+    }
 }
