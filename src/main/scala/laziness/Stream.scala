@@ -178,4 +178,7 @@ object Stream {
       case (None, Some(_))              => false
       case (None, None)                 => true
     }
+
+  def hasSubsequence[A](s: Stream[A], s2: Stream[A]): Boolean =
+    s.tails exists (startsWith(_, s2))
 }
