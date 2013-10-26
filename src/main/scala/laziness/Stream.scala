@@ -125,6 +125,9 @@ trait Stream[+A] {
         case (None, _)               => Some(empty, (empty, false))
       }
     }
+
+  def scanRight[B](z: B)(f: (A, => B) => B): Stream[B] =
+    tails.map(t => t.foldRight(z)(f))
 }
 
 object Stream {
