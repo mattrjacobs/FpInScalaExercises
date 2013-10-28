@@ -4,6 +4,9 @@ trait RNG {
   def nextInt: (Int, RNG)
   def positiveInt(rng: RNG): (Int, RNG)
   def double(rng: RNG): (Double, RNG)
+  def intDouble(rng: RNG): ((Int, Double), RNG)
+  def doubleInt(rng: RNG): ((Double, Int), RNG)
+  def double3(rng: RNG): ((Double, Double, Double), RNG)
 }
 
 object RNG {
@@ -34,6 +37,24 @@ object RNG {
     def double(rng: RNG): (Double, RNG) = {
       val (i, rng2) = positiveInt(rng)
       (i / (Int.MaxValue.toDouble + 1), rng2)
+    }
+
+    def intDouble(rng: RNG): ((Int, Double), RNG) = {
+      val (i, rng2) = nextInt
+      val (d, rng3) = double(rng2)
+      ((i, d), rng3)
+    }
+
+    def doubleInt(rng: RNG): ((Double, Int), RNG) = {
+      val ((i, d), rng2) = intDouble(rng)
+      ((d, i), rng2)
+    }
+
+    def double3(rng: RNG): ((Double, Double, Double), RNG) = {
+      val (d1, rng2) = double(rng)
+      val (d2, rng3) = double(rng2)
+      val (d3, rng4) = double(rng3)
+      ((d1, d2, d3), rng4)
     }
   }
 }

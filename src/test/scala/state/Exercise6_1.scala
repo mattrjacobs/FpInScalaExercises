@@ -2,10 +2,7 @@ package com.mattrjacobs.fp.state
 
 import org.specs2._
 
-class Exercise6_1 extends Specification {
-
-  val rng = RNG.simple(12345L)
-
+class Exercise6_1 extends TestRng {
   def is =
     "Exercise 6-1" ^
       "RNG.positiveInt" ^
