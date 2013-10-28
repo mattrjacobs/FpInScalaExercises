@@ -13,6 +13,7 @@ class Exercise6_1 extends Specification {
 
   def positiveInt = {
     val i = rng.positiveInt(rng)._1
+    println("Random int : " + i)
     i must beGreaterThan(0)
   }
 }

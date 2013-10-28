@@ -3,6 +3,7 @@ package com.mattrjacobs.fp.state
 trait RNG {
   def nextInt: (Int, RNG)
   def positiveInt(rng: RNG): (Int, RNG)
+  def double(rng: RNG): (Double, RNG)
 }
 
 object RNG {
@@ -30,5 +31,9 @@ object RNG {
       }
     }
 
+    def double(rng: RNG): (Double, RNG) = {
+      val (i, rng2) = positiveInt(rng)
+      (i / (Int.MaxValue.toDouble + 1), rng2)
+    }
   }
 }
