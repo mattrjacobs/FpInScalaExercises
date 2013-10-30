@@ -5,7 +5,7 @@ import org.specs2._
 class Exercise6_3 extends TestRng {
 
   def is =
-    "Exercise 6-2" ^
+    "Exercise 6-3" ^
       "RNG.intDouble" ^
       "returns valid int and double" ! randomIntDouble ^
       p ^
