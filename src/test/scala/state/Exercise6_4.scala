@@ -20,6 +20,7 @@ class Exercise6_4 extends TestRng {
 
   def ints4 = {
     val (l, r) = rng.ints(4)(rng)
+    l.foreach(i => println("Random int from list : " + i))
     l must haveSize(4)
   }
 }

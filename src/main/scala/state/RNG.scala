@@ -81,16 +81,23 @@ trait RNG {
     ((d1, d2, d3), rng4)
   }
 
-  def ints(count: Int): Rand[List[Int]] = (rng: RNG) => {
+  def ints(count: Int): Rand[List[Int]] = intsViaSequence(count)
+
+  def intsViaSequence(count: Int): Rand[List[Int]] =
+    RNG.sequence(List.fill(count)(int))
+
+  def intsDirect(count: Int): Rand[List[Int]] = (rng: RNG) => {
     (1 to count).foldRight((Nil: List[Int], rng)) {
       case (_, (l, r)) => r.nextInt match {
-        case (next, nextRng) => (next :: l, nextRng)
+        case (next, nextRng) => (l :+ next, nextRng)
       }
     }
   }
 }
 
 object RNG {
+  type Rand[+A] = RNG => (A, RNG)
+
   def simple(seed: Long): RNG = new RNG {
     def nextInt: (Int, RNG) = {
       val seed2 = (seed * 0x5DEECE66DL + 0xBL) &
@@ -99,4 +106,12 @@ object RNG {
         simple(seed2))
     }
   }
+
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
+    rng => fs.foldRight((Nil: List[A], rng)) {
+      case (f, (l, r)) => {
+        val (nextValue, nextRng) = f(r)
+        (l :+ nextValue, nextRng)
+      }
+    }
 }
