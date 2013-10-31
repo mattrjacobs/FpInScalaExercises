@@ -35,7 +35,12 @@ trait RNG {
     ((i1, i2), rng3)
   }
 
-  def double: Rand[Double] = (rng: RNG) => {
+  def double: Rand[Double] = doubleViaMap
+
+  def doubleViaMap: Rand[Double] =
+    map(positiveInt)(i => (i / (Int.MaxValue.toDouble + 1)))
+
+  def doubleDirect: Rand[Double] = (rng: RNG) => {
     val (i, rng2) = positiveInt(rng)
     (i / (Int.MaxValue.toDouble + 1), rng2)
   }
