@@ -16,6 +16,16 @@ trait RNG {
       (f(a), rng2)
     }
 
+  def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+    rng => {
+      val (a, rng2) = ra(rng)
+      val (b, rng3) = rb(rng2)
+      (f(a, b), rng3)
+    }
+
+  def both[A, B](ra: Rand[A], rb: Rand[B]): Rand[(A, B)] =
+    map2(ra, rb)((_, _))
+
   def positiveEven: Rand[Int] =
     map(positiveInt)(i => i - i % 2)
 
@@ -45,13 +55,21 @@ trait RNG {
     (i / (Int.MaxValue.toDouble + 1), rng2)
   }
 
-  def intDouble: Rand[(Int, Double)] = (rng: RNG) => {
+  def intDouble: Rand[(Int, Double)] = intDoubleViaMap2
+
+  def intDoubleViaMap2: Rand[(Int, Double)] = both(int, double)
+
+  def intDoubleDirect: Rand[(Int, Double)] = (rng: RNG) => {
     val (i, rng2) = nextInt
     val (d, rng3) = double(rng2)
     ((i, d), rng3)
   }
 
-  def doubleInt: Rand[(Double, Int)] = (rng: RNG) => {
+  def doubleInt: Rand[(Double, Int)] = doubleIntViaMap2
+
+  def doubleIntViaMap2: Rand[(Double, Int)] = both(double, int)
+
+  def doubleIntDirect: Rand[(Double, Int)] = (rng: RNG) => {
     val ((i, d), rng2) = intDouble(rng)
     ((d, i), rng2)
   }
