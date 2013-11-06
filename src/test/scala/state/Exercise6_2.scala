@@ -10,7 +10,7 @@ class Exercise6_2 extends TestRng {
       "returns double in [0, 1]" ! randomDouble
 
   def randomDouble = {
-    val d = rng.double(rng)._1
+    val d = rng.double.run(rng)._1
     println("Random double : " + d)
     doubleOk(d)
   }

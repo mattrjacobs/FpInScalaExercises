@@ -9,7 +9,7 @@ class Exercise6_1 extends TestRng {
       "returns positive int" ! positiveInt
 
   def positiveInt = {
-    val i = rng.positiveInt(rng)._1
+    val i = rng.positiveInt.run(rng)._1
     println("Random int : " + i)
     i must beGreaterThan(0)
   }
