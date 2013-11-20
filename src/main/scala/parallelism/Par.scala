@@ -52,6 +52,17 @@ object Par {
       sequence(fbs)
     }
 
+  def parFilter[A](l: List[A])(f: A => Boolean): Par[List[A]] = {
+    val nested: List[Par[List[A]]] = l.map(asyncF { (a: A) =>
+      f(a) match {
+        case true  => List(a)
+        case false => Nil
+      }
+    })
+
+    map(sequence(nested))(_.flatten)
+  }
+
   def sequence[A](l: List[Par[A]]): Par[List[A]] =
     l.foldRight(unit(Nil): Par[List[A]]) {
       case (parListA, parA) =>
