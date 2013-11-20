@@ -40,6 +40,24 @@ object Par {
     UnitFuture(f(firstFuture.get, secondFuture.get))
   }
 
+  def sortPar(parList: Par[List[Int]]): Par[List[Int]] =
+    map(parList)(_.sorted)
+
+  def map[A, B](pa: Par[A])(f: A => B): Par[B] =
+    map2(pa, unit(()))((a, _) => f(a))
+
+  def parMap[A, B](l: List[A])(f: A => B): Par[List[B]] =
+    fork {
+      val fbs: List[Par[B]] = l.map(asyncF(f))
+      sequence(fbs)
+    }
+
+  def sequence[A](l: List[Par[A]]): Par[List[A]] =
+    l.foldRight(unit(Nil): Par[List[A]]) {
+      case (parListA, parA) =>
+        map2(parListA, parA)((hd, rest) => hd :: rest)
+    }
+
   def fork[A](a: => Par[A]): Par[A] = es =>
     es.submit(new Callable[A] {
       override def call = a(es).get
