@@ -63,6 +63,21 @@ object Par {
     map(sequence(nested))(_.flatten)
   }
 
+  def parCount(l: List[String]): Par[Int] = {
+    val ints: List[Par[Int]] = l.map(asyncF { wordCount })
+    parReduce(sequence(ints))(_ + _)(0)
+  }
+
+  def parReduce[A](l: Par[List[A]])(f: (A, A) => A)(z: A): Par[A] = {
+    val x: List[A] => A = (s: List[A]) => s match {
+      case Nil          => z
+      case nonEmptyList => nonEmptyList.reduceLeft(f)
+    }
+    map(l)(x)
+  }
+
+  def wordCount(s: String) = s.split(" ").size
+
   def sequence[A](l: List[Par[A]]): Par[List[A]] =
     l.foldRight(unit(Nil): Par[List[A]]) {
       case (parListA, parA) =>
