@@ -40,6 +40,30 @@ object Par {
     UnitFuture(f(firstFuture.get, secondFuture.get))
   }
 
+  def map3[A, B, C, D](first: Par[A], second: Par[B], third: Par[C])(f: (A, B, C) => D): Par[D] = {
+    val abApplied: Par[C => D] =
+      map2(first, second)(f.curried(_)(_))
+    map2(abApplied, third)(_ apply _)
+  }
+
+  def map4[A, B, C, D, E](first: Par[A], second: Par[B], third: Par[C], fourth: Par[D])(f: (A, B, C, D) => E): Par[E] = {
+    val abApplied: Par[C => D => E] =
+      map2(first, second)(f.curried(_)(_))
+    val cApplied: Par[D => E] =
+      map2(abApplied, third)(_ apply _)
+    map2(cApplied, fourth)(_ apply _)
+  }
+
+  def map5[A, B, C, D, E, F](first: Par[A], second: Par[B], third: Par[C], fourth: Par[D], fifth: Par[E])(f: (A, B, C, D, E) => F): Par[F] = {
+    val abApplied: Par[C => D => E => F] =
+      map2(first, second)(f.curried(_)(_))
+    val cApplied: Par[D => E => F] =
+      map2(abApplied, third)(_ apply _)
+    val dApplied: Par[E => F] =
+      map2(cApplied, fourth)(_ apply _)
+    map2(dApplied, fifth)(_ apply _)
+  }
+
   def sortPar(parList: Par[List[Int]]): Par[List[Int]] =
     map(parList)(_.sorted)
 
