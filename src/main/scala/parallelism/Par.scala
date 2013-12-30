@@ -121,7 +121,12 @@ object Par {
       if (run(es)(cond).get) t(es)
       else f(es)
 
-  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = es => {
-    choices(run(es)(n).get)(es)
-  }
+  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] =
+    flatMap(n)(choices(_))
+
+  def choiceMap[K, V](key: Par[K])(choices: Map[K, Par[V]]): Par[V] =
+    flatMap(key)(choices(_))
+
+  def flatMap[A, B](a: Par[A])(f: A => Par[B]): Par[B] = es =>
+    f(run(es)(a).get)(es)
 }
