@@ -112,4 +112,16 @@ object Par {
     es.submit(new Callable[A] {
       override def call = a(es).get
     })
+
+  def delay[A](fa: => Par[A]): Par[A] =
+    es => fa(es)
+
+  def choice[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] =
+    es =>
+      if (run(es)(cond).get) t(es)
+      else f(es)
+
+  def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = es => {
+    choices(run(es)(n).get)(es)
+  }
 }
