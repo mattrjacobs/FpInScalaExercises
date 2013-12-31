@@ -132,4 +132,11 @@ object Par {
 
   def join[A](a: Par[Par[A]]): Par[A] = es =>
     run(es)(run(es)(a).get())
+
+  /*
+   * map2 signature: 
+   * def map2[A, B, C](first: Par[A], second: Par[B])(f: (A, B) => C): Par[C]
+   * This method runs both in parallel then combines them
+   * Using unit and flatMap would run them sequentially
+   */
 }
