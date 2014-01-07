@@ -15,12 +15,12 @@ class Exercise8_4 extends Specification {
   def choose = {
     val chooser = Gen.choose(3, 19)
 
-    (1 to 100).foldLeft(rng) { (r, _) =>
+    val (_, overallBool) = (1 to 100).foldLeft((rng, true)) { (tuple, _) =>
+      val (r, boolSoFar) = tuple
       val (i, newRng) = chooser.sample.run(r)
-      (i >= 3) mustEqual true
-      (i < 19) mustEqual true
-      newRng
+      val newBoolSoFar = boolSoFar && (i >= 3) && (i < 19)
+      (newRng, newBoolSoFar)
     }
-    0 mustEqual 0
+    overallBool must beTrue
   }
 }

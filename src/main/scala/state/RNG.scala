@@ -1,9 +1,26 @@
 package com.mattrjacobs.fp.state
 
 trait RNG {
+  def nextInt: (Int, RNG)
+
+  def randomPair: ((Int, Int), RNG) = {
+    val (i1, rng2) = nextInt
+    val (i2, rng3) = rng2.nextInt
+    ((i1, i2), rng3)
+  }
+}
+
+object RNG {
   type Rand[A] = State[RNG, A]
 
-  def nextInt: (Int, RNG)
+  def simple(seed: Long): RNG = new RNG {
+    def nextInt: (Int, RNG) = {
+      val seed2 = (seed * 0x5DEECE66DL + 0xBL) &
+        ((1L << 48) - 1)
+      ((seed2 >>> 16).asInstanceOf[Int],
+        simple(seed2))
+    }
+  }
 
   val int: Rand[Int] =
     State(rng => rng.nextInt)
@@ -47,16 +64,13 @@ trait RNG {
       }
     })
 
-  def randomPair: ((Int, Int), RNG) = {
-    val (i1, rng2) = nextInt
-    val (i2, rng3) = rng2.nextInt
-    ((i1, i2), rng3)
-  }
-
   def double: Rand[Double] = doubleViaMap
 
   def doubleViaMap: Rand[Double] =
     map(positiveInt)(i => (i / (Int.MaxValue.toDouble + 1)))
+
+  def boolean: Rand[Boolean] =
+    map(positiveInt)(i => i % 2 == 0)
 
   def doubleDirect: Rand[Double] =
     State(rng => {
@@ -70,7 +84,7 @@ trait RNG {
 
   def intDoubleDirect: Rand[(Int, Double)] =
     State(rng => {
-      val (i, rng2) = nextInt
+      val (i, rng2) = rng.nextInt
       val (d, rng3) = double.run(rng2)
       ((i, d), rng3)
     })
@@ -106,19 +120,6 @@ trait RNG {
         }
       }
     })
-}
-
-object RNG {
-  type Rand[A] = State[RNG, A]
-
-  def simple(seed: Long): RNG = new RNG {
-    def nextInt: (Int, RNG) = {
-      val seed2 = (seed * 0x5DEECE66DL + 0xBL) &
-        ((1L << 48) - 1)
-      ((seed2 >>> 16).asInstanceOf[Int],
-        simple(seed2))
-    }
-  }
 
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] =
     State(rng => fs.foldRight((Nil: List[A], rng)) {
