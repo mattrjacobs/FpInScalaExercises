@@ -4,7 +4,9 @@ import com.mattrjacobs.fp.laziness.Stream
 import com.mattrjacobs.fp.state.RNG
 import Prop._
 
-case class Prop(run: (TestCases, RNG) => Result)
+case class Prop(run: (TestCases, RNG) => Result) {
+
+}
 
 object Prop {
   type TestCases = Int
