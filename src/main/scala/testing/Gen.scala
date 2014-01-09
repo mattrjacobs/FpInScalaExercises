@@ -77,6 +77,12 @@ object Gen {
   def listOf[A](a: Gen[A]): Gen[List[A]] =
     new Gen(null)
 
+  def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
+    Gen.boolean().flatMap {
+      case true  => g1
+      case false => g2
+    }
+
   def forAll[A](a: Gen[A])(f: A => Boolean): Prop =
     new Prop {
       def check = Right(0)
