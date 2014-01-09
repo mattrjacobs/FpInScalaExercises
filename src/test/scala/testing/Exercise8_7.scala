@@ -19,7 +19,6 @@ class Exercise8_7 extends Specification {
     val (_, overallList) = (1 to 100).foldLeft((rng, List.empty[Int])) { (tuple, _) =>
       val (r, listSoFar) = tuple
       val (i, newRng) = gen.sample.run(r)
-      println(i)
       (newRng, listSoFar :+ i)
     }
     overallList.forall(x => x == 1 || x == 19) must beTrue
