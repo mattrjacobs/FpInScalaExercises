@@ -5,7 +5,9 @@ import com.mattrjacobs.fp.state.RNG
 import Prop._
 
 case class Prop(run: (TestCases, RNG) => Result) {
-
+  def &&(p2: Prop) = Prop { (num, rng) =>
+    run(num, rng) orElse p2.run(num, rng)
+  }
 }
 
 object Prop {
