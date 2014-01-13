@@ -8,6 +8,13 @@ case class Prop(run: (TestCases, RNG) => Result) {
   def &&(p2: Prop) = Prop { (num, rng) =>
     run(num, rng) orElse p2.run(num, rng)
   }
+
+  def ||(p2: Prop) = Prop { (num, rng) =>
+    for {
+      firstResult <- run(num, rng)
+      secondResult <- p2.run(num, rng)
+    } yield (firstResult._1 + secondResult._1, num)
+  }
 }
 
 object Prop {

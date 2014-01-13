@@ -32,7 +32,12 @@ class Exercise8_9 extends Specification with ThrownExpectations {
       "Prop.and" ^
       "both true" ! bothTrueAnd ^
       "one true" ! oneTrueAnd ^
-      "both false" ! bothFalseAnd
+      "both false" ! bothFalseAnd ^
+      p ^
+      "Prop.or" ^
+      "both true" ! bothTrueOr ^
+      "one true" ! oneTrueOr ^
+      "both false" ! bothFalseOr
 
   def bothTrueAnd = {
     trueProp1.run(100, rng) mustEqual None
@@ -53,6 +58,28 @@ class Exercise8_9 extends Specification with ThrownExpectations {
     falseProp2.run(100, rng).isDefined mustEqual true
 
     val result = (falseProp1 && falseProp2).run(100, rng)
+    result.isDefined mustEqual true
+  }
+
+  def bothTrueOr = {
+    trueProp1.run(100, rng) mustEqual None
+    trueProp2.run(100, rng) mustEqual None
+
+    (trueProp1 || trueProp2).run(100, rng) mustEqual None
+  }
+
+  def oneTrueOr = {
+    trueProp1.run(100, rng) mustEqual None
+    falseProp1.run(100, rng).isDefined mustEqual true
+
+    (trueProp1 || falseProp1).run(100, rng) mustEqual None
+  }
+
+  def bothFalseOr = {
+    falseProp1.run(100, rng).isDefined mustEqual true
+    falseProp2.run(100, rng).isDefined mustEqual true
+
+    val result = (falseProp1 || falseProp2).run(100, rng)
     result.isDefined mustEqual true
   }
 }
