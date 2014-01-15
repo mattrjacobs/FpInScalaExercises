@@ -3,7 +3,7 @@ package com.mattrjacobs.fp.testing
 import com.mattrjacobs.fp.laziness.Stream
 import com.mattrjacobs.fp.state.{ State, RNG }
 
-case class Gen[A](sample: State[RNG, A]) {
+case class Gen[+A](sample: State[RNG, A]) {
   def map[B](f: A => B): Gen[B] =
     Gen(sample.map(f))
 
@@ -49,8 +49,8 @@ object Gen {
   def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
     Gen(State.sequence(List.fill(n)(g.sample)))
 
-  def listOf[A](a: Gen[A]): Gen[List[A]] =
-    new Gen(null)
+  def listOf[A](a: Gen[A]): SGen[List[A]] =
+    SGen(num => listOfN(num, a))
 
   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
     Gen.boolean().flatMap {
@@ -58,15 +58,9 @@ object Gen {
       case false => g2
     }
 
-  def forAll[A](a: Gen[A])(f: A => Boolean): Prop =
-    Prop {
-      (n, rng) =>
-        Prop.randomStream(a)(rng).zip(Stream.from(0)).take(n).map {
-          case (a, i) => try {
-            if (f(a)) None else Some((a.toString, i))
-          } catch {
-            case e: Exception => Some((Prop.buildMsg(a, e), i))
-          }
-        }.find(_.isDefined).getOrElse(None)
-    }
+  def unsized[A](a: Gen[A]): SGen[A] = SGen(_ => a)
+}
+
+case class SGen[+A](forSize: Int => Gen[A]) {
+  def apply(n: Int): Gen[A] = forSize(n)
 }

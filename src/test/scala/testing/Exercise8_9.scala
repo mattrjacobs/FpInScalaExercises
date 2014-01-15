@@ -11,19 +11,19 @@ class Exercise8_9 extends Specification with ThrownExpectations {
   val even = Gen.choose(0, 51).map(_ * 2)
   val odd = Gen.choose(0, 50).map(x => (x * 2) + 1)
 
-  val trueProp1 = Gen.forAll(even) {
+  val trueProp1 = Prop.forAll(even) {
     i => i % 2 == 0
   }
 
-  val trueProp2 = Gen.forAll(even) {
+  val trueProp2 = Prop.forAll(even) {
     i => i < 1000
   }
 
-  val falseProp1 = Gen.forAll(even) {
+  val falseProp1 = Prop.forAll(even) {
     i => i % 2 == 1
   }
 
-  val falseProp2 = Gen.forAll(even) {
+  val falseProp2 = Prop.forAll(even) {
     i => i > 12121
   }
 
@@ -40,46 +40,46 @@ class Exercise8_9 extends Specification with ThrownExpectations {
       "both false" ! bothFalseOr
 
   def bothTrueAnd = {
-    trueProp1.run(100, rng) mustEqual None
-    trueProp2.run(100, rng) mustEqual None
+    trueProp1.run(10, 100, rng) mustEqual None
+    trueProp2.run(10, 100, rng) mustEqual None
 
-    (trueProp1 && trueProp2).run(100, rng) mustEqual None
+    (trueProp1 && trueProp2).run(10, 100, rng) mustEqual None
   }
 
   def oneTrueAnd = {
-    trueProp1.run(100, rng) mustEqual None
-    falseProp1.run(100, rng).isDefined mustEqual true
+    trueProp1.run(10, 100, rng) mustEqual None
+    falseProp1.run(10, 100, rng).isDefined mustEqual true
 
-    (trueProp1 && falseProp1).run(100, rng).isDefined mustEqual true
+    (trueProp1 && falseProp1).run(10, 100, rng).isDefined mustEqual true
   }
 
   def bothFalseAnd = {
-    falseProp1.run(100, rng).isDefined mustEqual true
-    falseProp2.run(100, rng).isDefined mustEqual true
+    falseProp1.run(10, 100, rng).isDefined mustEqual true
+    falseProp2.run(10, 100, rng).isDefined mustEqual true
 
-    val result = (falseProp1 && falseProp2).run(100, rng)
+    val result = (falseProp1 && falseProp2).run(10, 100, rng)
     result.isDefined mustEqual true
   }
 
   def bothTrueOr = {
-    trueProp1.run(100, rng) mustEqual None
-    trueProp2.run(100, rng) mustEqual None
+    trueProp1.run(10, 100, rng) mustEqual None
+    trueProp2.run(10, 100, rng) mustEqual None
 
-    (trueProp1 || trueProp2).run(100, rng) mustEqual None
+    (trueProp1 || trueProp2).run(10, 100, rng) mustEqual None
   }
 
   def oneTrueOr = {
-    trueProp1.run(100, rng) mustEqual None
-    falseProp1.run(100, rng).isDefined mustEqual true
+    trueProp1.run(10, 100, rng) mustEqual None
+    falseProp1.run(10, 100, rng).isDefined mustEqual true
 
-    (trueProp1 || falseProp1).run(100, rng) mustEqual None
+    (trueProp1 || falseProp1).run(10, 100, rng) mustEqual None
   }
 
   def bothFalseOr = {
-    falseProp1.run(100, rng).isDefined mustEqual true
-    falseProp2.run(100, rng).isDefined mustEqual true
+    falseProp1.run(10, 100, rng).isDefined mustEqual true
+    falseProp2.run(10, 100, rng).isDefined mustEqual true
 
-    val result = (falseProp1 || falseProp2).run(100, rng)
+    val result = (falseProp1 || falseProp2).run(10, 100, rng)
     result.isDefined mustEqual true
   }
 }
