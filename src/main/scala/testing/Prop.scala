@@ -56,5 +56,18 @@ object Prop {
   def forAll[A](g: SGen[A])(f: A => Boolean): Prop = {
     forAll(g(_))(f)
   }
+
+  def run(p: Prop,
+          maxSize: Int = 100,
+          testCases: Int = 100,
+          rng: RNG = RNG.simple(System.currentTimeMillis)): Result = {
+    val result = p.run(maxSize, testCases, rng)
+    result match {
+      case Some((_, msg, n)) =>
+        println("Falsified after " + n + " passed tests:\n" + msg)
+      case None => println("OK, passed " + testCases + " tests.")
+    }
+    result
+  }
 }
 

@@ -52,6 +52,9 @@ object Gen {
   def listOf[A](a: Gen[A]): SGen[List[A]] =
     SGen(num => listOfN(num, a))
 
+  def listOf1[A](a: Gen[A]): SGen[List[A]] =
+    SGen(num => listOfN(num + 1, a))
+
   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
     Gen.boolean().flatMap {
       case true  => g1
