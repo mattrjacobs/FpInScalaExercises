@@ -7,7 +7,13 @@ case class Gen[+A](sample: State[RNG, A]) {
   def map[B](f: A => B): Gen[B] =
     Gen(sample.map(f))
 
-  def flatMap[B](f: A => Gen[B]) =
+  def map2[B, C](g2: Gen[B])(f: (A, B) => C) =
+    Gen.map2(this, g2)(f)
+
+  def **[B](g: Gen[B]): Gen[(A, B)] =
+    (this map2 g)((_, _))
+
+  def flatMap[B](f: A => Gen[B]): Gen[B] =
     Gen(sample.flatMap(a => f(a).sample))
 
   def listOfN(count: Gen[Int]): Gen[List[A]] =
@@ -61,7 +67,31 @@ object Gen {
       case false => g2
     }
 
+  def weighted[A](g1: (Gen[A], Double), g2: (Gen[A], Double)): Gen[A] = {
+    val BIG = 10000
+    val totalWeight = g1._2 + g2._2
+    val simulatedMax = (totalWeight * BIG).toInt
+    val threshold = (g1._2 * BIG).toInt
+    Gen.choose(1, simulatedMax + 1).flatMap {
+      case u if u <= threshold => g1._1
+      case o                   => g2._1
+    }
+  }
+
   def unsized[A](a: Gen[A]): SGen[A] = SGen(_ => a)
+
+  def map2[A, B, C](g1: Gen[A], g2: Gen[B])(f: (A, B) => C): Gen[C] =
+    for {
+      a1 <- g1
+      a2 <- g2
+    } yield f(a1, a2)
+
+  val weightedExecutor = {
+    import java.util.concurrent.Executors
+    weighted(
+      Gen.choose(1, 4).map(Executors.newFixedThreadPool) -> 0.75,
+      Gen.unit(Executors.newCachedThreadPool) -> 0.25)
+  }
 }
 
 case class SGen[+A](forSize: Int => Gen[A]) {

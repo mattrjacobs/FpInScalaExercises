@@ -1,6 +1,7 @@
 package com.mattrjacobs.fp.testing
 
 import com.mattrjacobs.fp.laziness.Stream
+import com.mattrjacobs.fp.parallelism.Par._
 import com.mattrjacobs.fp.state.RNG
 import Prop._
 
@@ -57,6 +58,19 @@ object Prop {
     forAll(g(_))(f)
   }
 
+  def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
+    forAll(Gen.weightedExecutor ** g) {
+      case (s, a) => f(a)(s).get
+    }
+
+  def checkPar(p: Par[Boolean]): Prop =
+    forAllPar(Gen.unit(()))(_ => p)
+
+  def check(p: => Boolean): Prop = {
+    lazy val result = p
+    forAll(Gen.unit(()))(_ => result)
+  }
+
   def run(p: Prop,
           maxSize: Int = 100,
           testCases: Int = 100,
@@ -71,3 +85,6 @@ object Prop {
   }
 }
 
+object ** {
+  def unapply[A, B](p: (A, B)) = Some(p)
+}
